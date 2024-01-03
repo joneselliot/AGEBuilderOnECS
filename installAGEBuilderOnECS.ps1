@@ -4,7 +4,7 @@
 #>
 
 Param($ageVersionInput)
-$ageVersionInput = "11.2" #debug
+$ageVersionInput = "10.8.1" #debug
 
 # Load global variables and functions
 . $PSScriptRoot\globalVariables.ps1
