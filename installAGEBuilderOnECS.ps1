@@ -12,7 +12,7 @@ $ageVersionInput = "11.2" #debug
 
 # Locate Software item that contains the appropriate ArcGIS Enterprise information
 $software = Import-Csv -Path $softwareVersionsPath | Where-Object -Property arcgisVersion -eq $ageVersionInput
-Write-Output $software
+# Write-Output $software
 
 # Write-Output "Run Invoke-EnterpriseBuilderPrep"
 # Invoke-EnterpriseBuilderPrep
@@ -20,9 +20,14 @@ Write-Output $software
 # Write-Output "Run EnterpriseBuilderInstallPrerequisites"
 # Invoke-EnterpriseBuilderInstallPrerequisites 
 
-Write-Output "Run EnterpriseBuilderInstall"
-Invoke-EnterpriseBuilderInstall
+# Write-Output "Run EnterpriseBuilderInstall"
+# Invoke-EnterpriseBuilderInstall
 
+# Write-Output "Run EnterpriseBuilderWaitCondition"
 # Invoke-EnterpriseBuilderWaitCondition
 
-# Invoke-EnterpriseBuilderConfiguration
+# Write-Output "Run Apply-ArcGISFolderPermissions"
+# Invoke-ApplyArcGISFolderPermissions
+
+Write-Output "Run EnterpriseBuilderConfiguration"
+Invoke-EnterpriseBuilderConfiguration

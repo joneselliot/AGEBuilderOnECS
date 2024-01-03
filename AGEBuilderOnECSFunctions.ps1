@@ -51,17 +51,36 @@ function Invoke-EnterpriseBuilderInstall
         Invokes the ArcGIS Enterprise Builder silent install parameters.
     #>
     
+    # Start the silent installation process
     Start-Process ($tempPath+'\Builder\Builder.exe') -Argument "ACCEPTEULA=yes SERVER_AUTHORIZATION=$($software.serverLicenseFile) GIS_PASSWORD=Enterprise!!12345 /qn" -NoNewWindow -Wait -PassThru
+
+    # Ensure the local arcgis account has permissions to installation directories
+
+
 }
 
-function Invoke-EnterpriseBuilderWaitCondition
+function Invoke-ApplyArcGISFolderPermissions
 {
     <#
     .SYNOPSIS
-        Waits for ArcGIS Enterprise to be installed before attempting configuration.
+        Apply permissions to the local 'arcgis' account for required folders.
     #>
-   
-}
+
+    # Define list of folders that the 'arcgis' account should receive Full Control permissions to.
+    $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgisportal", "C:\arcgisserver", "C:\arcgisdatastore", "C:\arcgiscontent")
+
+    # Apply ACL to each folder in the list
+    ForEach ($folder in $RequiredFoldersList)
+    {
+    Write-Output "Applying ACL to $folder"
+    $ACL = Get-ACL -Path $folder
+    $AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("arcgis","FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
+    $ACL.SetAccessRule($AccessRule)
+    $ACL | Set-ACL -Path $folder
+    # (Get-ACL -Path $folder).Access | Format-Table IdentityReference,FileSystemRights,AccessControlType,IsInherited,InheritanceFlags -AutoSize
+    }
+
+    }
 
 function Invoke-EnterpriseBuilderConfiguration
 {
@@ -69,6 +88,6 @@ function Invoke-EnterpriseBuilderConfiguration
     .SYNOPSIS
         Invokes the ArcGIS Enterprise Builder silent configuration parameters.
     #>
-    Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\arcgis -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
+    Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\ -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
 
 }
