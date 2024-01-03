@@ -12,15 +12,23 @@ function Invoke-EnterpriseBuilderPrep
     {New-Item $tempPath -ItemType Directory -Force}
 
     # Copy ArcGIS Enterprise Builder setup files and mount drive
-    $CopyInfo = Copy-Item -Path $software.arcgisInstallationPath -Destination $tempPath -Force -PassThru
-    Mount-DiskImage -ImagePath ($tempPath+'\'+$CopyInfo.Name)
-    $DiskImage = Get-DiskImage -ImagePath ($tempPath+'\'+$CopyInfo.Name)
-    $PSDrive = New-PSDrive -Name ISOFile -PSProvider FileSystem -Root (Get-Volume -DiskImage $DiskImage).UniqueId
+    Copy-Item -Path $software.arcgisInstallationPath -Destination $tempPath -Force -PassThru
+    $arcgisInstallationName = Split-Path $software.arcgisInstallationPath -leaf
+    $mountResult = Mount-DiskImage -ImagePath ($tempPath+'\'+$arcgisInstallationName) -StorageType ISO -PassThru
+    $driveLetter = ($mountResult | Get-Volume).DriveLetter
+
+    $destinationPath = ($tempPath+'\'+'Builder')
+    # Create destination folder within $tempPath
+    New-Item -Path $destinationPath -ItemType Directory -Force
+    # Copy files from the mounted virtual disk to the destination folder
+    Write-Host $destinationPath
+    Copy-Item -Path ($driveLetter+':\*') -Destination $destinationPath -Recurse -Force
+    # Unmount the virtual disk
+    Dismount-DiskImage -ImagePath ($tempPath+'\'+$arcgisInstallationName)
 
     # Copy Prerequisite Setup Files to Temp folder
     Copy-Item -Path ($localinstallersPath+'\'+$dotnetHostingBundleInstaller) -Destination ($tempPath+'\'+$dotnetHostingBundleInstaller)
     Copy-Item -Path ($localinstallersPath+'\'+$webDeployInstaller) -Destination ($tempPath+'\'+$webDeployInstaller)
-    Return $PSDrive
 }
 
 function Invoke-EnterpriseBuilderInstallPrerequisites
@@ -42,9 +50,8 @@ function Invoke-EnterpriseBuilderInstall
     .SYNOPSIS
         Invokes the ArcGIS Enterprise Builder silent install parameters.
     #>
-    Param($PSDrive)
-    Push-Location "$($PSDrive.Name):"
-    Start-Process "Builder.exe" -Argument "ACCEPTEULA=yes SERVER_AUTHORIZATION=$($software.serverLicenseFile) GIS_PASSWORD=Enterprise!!12345"
+    
+    Start-Process ($tempPath+'\Builder\Builder.exe') -Argument "ACCEPTEULA=yes SERVER_AUTHORIZATION=$($software.serverLicenseFile) GIS_PASSWORD=Enterprise!!12345 /qn" -NoNewWindow -Wait -PassThru
 }
 
 function Invoke-EnterpriseBuilderWaitCondition

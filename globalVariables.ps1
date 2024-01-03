@@ -3,7 +3,7 @@ $softwareVersionsPath = "$PSScriptRoot\BuilderVersions.csv"
 # $localinstallersPath = "\\cpde-ess-data\ess-data\static_data\software\IIS_Modules"
 # $dotnetHostingBundleInstaller = "dotnet-hosting-6.0.15-win"
 # $webDeployInstaller = "WebDeploy_amd64_en-US"
-$tempPath = "C:\temp\AGEBuilderOnECS\"
+$tempPath = "C:\temp\AGEBuilderOnECS"
 
 #Dev 
 $localinstallersPath = "C:\AGEBuilderOnECS\prereqs"
