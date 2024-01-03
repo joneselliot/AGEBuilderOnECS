@@ -29,6 +29,9 @@ function Invoke-EnterpriseBuilderPrep
     # Copy Prerequisite Setup Files to Temp folder
     Copy-Item -Path ($localinstallersPath+'\'+$dotnetHostingBundleInstaller) -Destination ($tempPath+'\'+$dotnetHostingBundleInstaller)
     Copy-Item -Path ($localinstallersPath+'\'+$webDeployInstaller) -Destination ($tempPath+'\'+$webDeployInstaller)
+
+    # Create content folder
+    New-Item -Path "C:\arcgiscontent" -ItemType Directory -Force
 }
 
 function Invoke-EnterpriseBuilderInstallPrerequisites
@@ -67,7 +70,10 @@ function Invoke-ApplyArcGISFolderPermissions
     #>
 
     # Define list of folders that the 'arcgis' account should receive Full Control permissions to.
-    $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgisportal", "C:\arcgisserver", "C:\arcgisdatastore", "C:\arcgiscontent")
+    # $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgis\arcgisportal", "C:\arcgis\arcgisserver", "C:\arcgis\arcgisdatastore")
+    # $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgis\arcgisportal")
+    $RequiredFoldersList = ("C:\arcgiscontent")
+
 
     # Apply ACL to each folder in the list
     ForEach ($folder in $RequiredFoldersList)
@@ -88,6 +94,6 @@ function Invoke-EnterpriseBuilderConfiguration
     .SYNOPSIS
         Invokes the ArcGIS Enterprise Builder silent configuration parameters.
     #>
-    Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\ -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
+    Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\arcgiscontent -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
 
 }
