@@ -4,6 +4,7 @@ $softwareVersionsPath = "$PSScriptRoot\BuilderVersions.csv"
 # $dotnetHostingBundleInstaller = "dotnet-hosting-6.0.15-win"
 # $webDeployInstaller = "WebDeploy_amd64_en-US"
 $tempPath = "C:\temp\AGEBuilderOnECS"
+$arcgisConfigurationUtilityPath = "C:\Progam Files\ArcGIS\Server\tools\configurebasedeployment"
 
 #Dev 
 $localinstallersPath = "C:\AGEBuilderOnECS\prereqs"

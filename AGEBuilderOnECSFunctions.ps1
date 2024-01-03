@@ -69,4 +69,6 @@ function Invoke-EnterpriseBuilderConfiguration
     .SYNOPSIS
         Invokes the ArcGIS Enterprise Builder silent configuration parameters.
     #>
+    Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\arcgis -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
+
 }
