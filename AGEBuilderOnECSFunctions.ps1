@@ -71,8 +71,8 @@ function Invoke-ApplyArcGISFolderPermissions
 
     # Define list of folders that the 'arcgis' account should receive Full Control permissions to.
     # $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgis\arcgisportal", "C:\arcgis\arcgisserver", "C:\arcgis\arcgisdatastore")
-    # $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgis\arcgisportal")
-    $RequiredFoldersList = ("C:\arcgiscontent")
+    $RequiredFoldersList = ("C:\Program Files\ArcGIS\Server", "C:\Program Files\ArcGIS\DataStore", "C:\Program Files\ArcGIS\Portal", "C:\arcgis\arcgisportal")
+    # $RequiredFoldersList = ("C:\arcgiscontent")
 
 
     # Apply ACL to each folder in the list
