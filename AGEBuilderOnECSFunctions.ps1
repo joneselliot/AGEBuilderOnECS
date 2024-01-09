@@ -104,8 +104,8 @@ function Invoke-UpdateArcGISEnvironmentVariables
     .SYNOPSIS
         Updates the environment variables in the session to include ArcGIS installation paths.
     #>
-    $env:AGSDATASTORE = [System.Environment]::GetEnvironmentVariable('AGSDATASTORE', 'machine') | Write-Output
-    $env:AGSSERVER = [System.Environment]::GetEnvironmentVariable('AGSSERVER', 'machine') | Write-Output
-    $env:AGSPORTAL = [System.Environment]::GetEnvironmentVariable('AGSPORTAL', 'machine') | Write-Output
+    $env:AGSDATASTORE = [System.Environment]::GetEnvironmentVariable('AGSDATASTORE', 'machine')
+    $env:AGSSERVER = [System.Environment]::GetEnvironmentVariable('AGSSERVER', 'machine')
+    $env:AGSPORTAL = [System.Environment]::GetEnvironmentVariable('AGSPORTAL', 'machine')
 
 }
