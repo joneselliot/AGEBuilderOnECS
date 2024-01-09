@@ -26,5 +26,8 @@ Invoke-EnterpriseBuilderInstall
 Write-Output "Run Invoke-ApplyArcGISFolderPermissions"
 Invoke-ApplyArcGISFolderPermissions
 
+Write-Output "Run Invoke-UpdateArcGISEnvironmentVariables"
+Invoke-UpdateArcGISEnvironmentVariables
+
 Write-Output "Run EnterpriseBuilderConfiguration"
 Invoke-EnterpriseBuilderConfiguration

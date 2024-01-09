@@ -97,3 +97,15 @@ function Invoke-EnterpriseBuilderConfiguration
     Start-Process $arcgisConfigurationUtilityPath -Argument "-fn Site -ln Administrator -u portaladmin -p portaladmin1 -e portaladmin@esri.com -qi 13 -qa Esri -d C:\arcgiscontent -lf $($software.portalLicenseFile) -ut creatorUT" -NoNewWindow -Wait -PassThru
 
 }
+
+function Invoke-UpdateArcGISEnvironmentVariables
+{
+    <#
+    .SYNOPSIS
+        Updates the environment variables in the session to include ArcGIS installation paths.
+    #>
+    $env:AGSDATASTORE = [System.Environment]::GetEnvironmentVariable('AGSDATASTORE', 'machine') | Write-Output
+    $env:AGSSERVER = [System.Environment]::GetEnvironmentVariable('AGSSERVER', 'machine') | Write-Output
+    $env:AGSPORTAL = [System.Environment]::GetEnvironmentVariable('AGSPORTAL', 'machine') | Write-Output
+
+}
