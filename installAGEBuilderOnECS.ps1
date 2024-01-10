@@ -3,8 +3,11 @@
     Installs ArcGIS Enterprise via ArcGIS Enterprise Builder given a specified arcgisVersion.
 #>
 
-Param($ageVersionInput)
-$ageVersionInput = "10.8.1" #debug
+Param(
+    [Parameter(Mandatory=$true)]
+    [String]$ageVersionInput
+    )
+#$ageVersionInput = "10.8.1" #debug
 
 # Load global variables and functions
 . $PSScriptRoot\globalVariables.ps1
@@ -15,7 +18,7 @@ $software = Import-Csv -Path $softwareVersionsPath | Where-Object -Property arcg
 # Write-Output $software
 
 Write-Output "Run Invoke-EnterpriseBuilderPrep"
-Invoke-EnterpriseBuilderPrep
+Invoke-EnterpriseBuilderPrep 
 
 Write-Output "Run EnterpriseBuilderInstallPrerequisites"
 Invoke-EnterpriseBuilderInstallPrerequisites 
