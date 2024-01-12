@@ -1,29 +1,41 @@
-$tempPath = "C:\temp\AGEBuilderOnECS\"
-$softwareVersionsPath = "$PSScriptRoot\BuilderVersions.csv"
+<#
+.SYNOPSIS
+    Installs ArcGIS Enterprise via ArcGIS Enterprise Builder given a specified arcgisVersionInput.
+#>
 
-#Dev 
-$localinstallersPath = "C:\AGEBuilderOnECS\prereqs"
-$dotnetHostingBundleInstaller = "dotnet-hosting-6.0.25-win.exe"
-$webDeployInstaller = "WebDeploy_amd64_en-US.msi"
+Param(
+    [Parameter(Mandatory=$true)]
+    [String]$ageVersionInput
+    )
 
+# Load global variables and functions
+. $PSScriptRoot\globalVariables.ps1
+. $PSScriptRoot\AGEBuilderOnECSFunctions.ps1
 
-#   # Copy ArcGIS Enterprise Builder setup files and mount drive
-# #   $CopyInfo = Copy-Item -Path $software.arcgisInstallationPath -Destination $tempPath -Force -PassThru
-# #   Mount-DiskImage -ImagePath ($tempPath+'\'+$CopyInfo.Name)
-# #   $DiskImage = Get-DiskImage -ImagePath ($tempPath+'\'+$CopyInfo.Name)
-#    Mount-DiskImage -ImagePath ($tempPath+'\'+"ArcGIS_Enterprise_Builder_Windows_112_188275.iso")
-#    $DiskImage = Get-DiskImage -ImagePath ($tempPath+'\'+"ArcGIS_Enterprise_Builder_Windows_112_188275.iso")
-#   $PSDrive = New-PSDrive -Name ISOFile -PSProvider FileSystem -Root (Get-Volume -DiskImage $DiskImage).UniqueId
+# Locate Software item that contains the appropriate ArcGIS Enterprise information
+$software = Import-Csv -Path $softwareVersionsPath | Where-Object -Property arcgisVersion -eq $ageVersionInput
+# Write-Output $software
 
-  # Mount the ISO file
-$isoPath = "C:\AGEBuilderOnECS\prereqs\ArcGIS_Enterprise_Builder_Windows_112_188275.iso"
-$mountPath = 'D:'
-$mountInfo = Mount-DiskImage -ImagePath $isoPath -StorageType ISO -PassThru
-$driveLetter = ($mountInfo | Get-Volume).DriveLetter
+# Write-Output "Run Invoke-EnterpriseBuilderPrep"
+# Invoke-EnterpriseBuilderPrep 
 
-# Copy files from the mounted virtual disk to the destination folder
-$sourcePath = $isoPath
-$destinationPath = $tempPath
-Copy-Item -Path ($driveLetter+':\*') -Destination $destinationPath -Recurse
-# Unmount the virtual disk
-Dismount-DiskImage -ImagePath $isoPath
+# Write-Output "Run EnterpriseBuilderInstallPrerequisites"
+# Invoke-EnterpriseBuilderInstallPrerequisites 
+
+Write-Output "Run Invoke-RequestSSLCertificate"
+Invoke-RequestSSLCertificate
+
+Write-Output "Run Invoke-UpdateWindowsIISCertBinding"
+Invoke-UpdateWindowsIISCertBinding
+
+# Write-Output "Run EnterpriseBuilderInstall"
+# Invoke-EnterpriseBuilderInstall
+
+# Write-Output "Run Invoke-ApplyArcGISFolderPermissions"
+# Invoke-ApplyArcGISFolderPermissions
+
+# Write-Output "Run Invoke-UpdateArcGISEnvironmentVariables"
+# Invoke-UpdateArcGISEnvironmentVariables
+
+# Write-Output "Run EnterpriseBuilderConfiguration"
+# Invoke-EnterpriseBuilderConfiguration

@@ -116,8 +116,7 @@ Function Invoke-RequestSSLCertificate
     .SYNOPSIS
         Request an SSL certificate from certifactory.esri.com and store it in the temporary directory.
     #>
-    $sslCertPath = ($tempPath+'\wildcard.pfx')
-    $sslCertPassword = "esri1234"
+    # $sslCertPath = ($tempPath+'\wildcard.pfx')
     Invoke-RestMethod -Uri "https://certifactory.esri.com/api/wildcard.pfx?password=$sslCertPassword" -OutFile $sslCertPath
 }
 
@@ -128,8 +127,7 @@ Function Invoke-UpdateWindowsIISCertBinding
         Update any IIS websites that contain an https binding to use an SSL certificate.
     #>
     
-    #dev 
-    $sslCertPath = "C:\AGEBuilderOnECS\prereqs\wildcard.pfx"
+    # Convert SSL Certificate password to secure string
     $sslCertPasswordSecure = ConvertTo-SecureString $sslCertPassword -AsPlainText -Force
     
     Import-Module WebAdministration
