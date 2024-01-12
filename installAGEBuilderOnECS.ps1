@@ -1,13 +1,12 @@
 <#
 .SYNOPSIS
-    Installs ArcGIS Enterprise via ArcGIS Enterprise Builder given a specified arcgisVersion.
+    Installs ArcGIS Enterprise via ArcGIS Enterprise Builder given a specified arcgisVersionInput.
 #>
 
 Param(
     [Parameter(Mandatory=$true)]
     [String]$ageVersionInput
     )
-#$ageVersionInput = "10.8.1" #debug
 
 # Load global variables and functions
 . $PSScriptRoot\globalVariables.ps1
@@ -22,6 +21,12 @@ Invoke-EnterpriseBuilderPrep
 
 Write-Output "Run EnterpriseBuilderInstallPrerequisites"
 Invoke-EnterpriseBuilderInstallPrerequisites 
+
+Write-Output "Run Invoke-RequestSSLCertificate"
+Invoke-RequestSSLCertificate
+
+Write-Output "Run Invoke-UpdateWindowsIISCertBinding"
+Invoke-UpdateWindowsIISCertBinding
 
 Write-Output "Run EnterpriseBuilderInstall"
 Invoke-EnterpriseBuilderInstall

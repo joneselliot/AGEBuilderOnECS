@@ -109,3 +109,57 @@ function Invoke-UpdateArcGISEnvironmentVariables
     $env:AGSPORTAL = [System.Environment]::GetEnvironmentVariable('AGSPORTAL', 'machine')
 
 }
+
+Function Invoke-RequestSSLCertificate
+{
+    <#
+    .SYNOPSIS
+        Request an SSL certificate from certifactory.esri.com and store it in the temporary directory.
+    #>
+    $sslCertPath = ($tempPath+'\wildcard.pfx')
+    $sslCertPassword = "esri1234"
+    Invoke-RestMethod -Uri "https://certifactory.esri.com/api/wildcard.pfx?password=$sslCertPassword" -OutFile $sslCertPath
+}
+
+Function Invoke-UpdateWindowsIISCertBinding
+{    
+    <#
+    .SYNOPSIS
+        Update any IIS websites that contain an https binding to use an SSL certificate.
+    #>
+    
+    #dev 
+    $sslCertPath = "C:\AGEBuilderOnECS\prereqs\wildcard.pfx"
+    $sslCertPasswordSecure = ConvertTo-SecureString $sslCertPassword -AsPlainText -Force
+    
+    Import-Module WebAdministration
+    
+    $newCert = Import-PfxCertificate `
+      -FilePath $sslCertPath `
+      -CertStoreLocation "Cert:\LocalMachine\My" `
+      -password $sslCertPasswordSecure
+    
+      $sites = Get-ChildItem -Path IIS:\Sites
+    
+      foreach ($site in $sites)
+      {
+          foreach ($binding in $site.Bindings.Collection)
+          {
+              if ($binding.protocol -eq 'https')
+              {
+                  $search = "Cert:\LocalMachine\My\$($binding.certificateHash)"
+                  $certs = Get-ChildItem -path $search -Recurse
+                  $hostname = hostname
+                  
+                  if (($certs.count -gt 0))
+                  {
+                    # Write-Output "Updating $hostname, site: `"$($site.name)`", binding: `"$($binding.bindingInformation)`", current cert: `"$($certs[0].Subject)`", Expiry Date: `"$($certs[0].NotAfter)`""
+                    #   Invoke-LogEntry -logTarget $node.FQDN -logStatus "info" -logFunction "Update-WindowsIISCertBinding" -logMessage "Updating $hostname, site: `"$($site.name)`", binding: `"$($binding.bindingInformation)`", current cert: `"$($certs[0].Subject)`", Expiry Date: `"$($certs[0].NotAfter)`"" -logError $_.Exception -logTrace $_.ScriptStackTrace
+    
+                      $binding.AddSslCertificate($newCert.Thumbprint, "my")
+                  }
+              }
+          }
+      }
+
+} 
