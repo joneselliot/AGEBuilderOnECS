@@ -16,26 +16,4 @@ Param(
 $software = Import-Csv -Path $softwareVersionsPath | Where-Object -Property arcgisVersion -eq $ageVersionInput
 # Write-Output $software
 
-# Write-Output "Run Invoke-EnterpriseBuilderPrep"
-# Invoke-EnterpriseBuilderPrep 
-
-# Write-Output "Run EnterpriseBuilderInstallPrerequisites"
-# Invoke-EnterpriseBuilderInstallPrerequisites 
-
-Write-Output "Run Invoke-RequestSSLCertificate"
-Invoke-RequestSSLCertificate
-
-Write-Output "Run Invoke-UpdateWindowsIISCertBinding"
-Invoke-UpdateWindowsIISCertBinding
-
-# Write-Output "Run EnterpriseBuilderInstall"
-# Invoke-EnterpriseBuilderInstall
-
-# Write-Output "Run Invoke-ApplyArcGISFolderPermissions"
-# Invoke-ApplyArcGISFolderPermissions
-
-# Write-Output "Run Invoke-UpdateArcGISEnvironmentVariables"
-# Invoke-UpdateArcGISEnvironmentVariables
-
-# Write-Output "Run EnterpriseBuilderConfiguration"
-# Invoke-EnterpriseBuilderConfiguration
+Invoke-CreateWindowsIISCertBinding

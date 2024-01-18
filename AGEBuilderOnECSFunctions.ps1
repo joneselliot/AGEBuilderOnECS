@@ -110,6 +110,29 @@ function Invoke-UpdateArcGISEnvironmentVariables
 
 }
 
+Function Invoke-CreateWindowsIISCertBinding
+{
+    <#
+    .SYNOPSIS
+        Create an IIS cert binding with a self-signed certificate on HTTPS port 443. This resolves issues where earlier versions of Enterprise configuration do not create a 443 binding in IIS automatically.
+    #>
+    Import-Module WebAdministration
+    Import-Module IISAdministration
+
+    $password = "$sslCertPassword"  # put your password on string1
+    $hostName = "localhost"
+    $port = "443"
+    $storeLocation = "Cert:\LocalMachine\My"
+    $certificate = New-SelfSignedCertificate -DnsName $hostName -CertStoreLocation $storeLocation
+    $thumbPrint = $certificate.Thumbprint
+    $bindingInformation = "*:" + $port + ":"#$hostName
+    $certificatePath = ("cert:\localmachine\my\" + $certificate.Thumbprint)
+    $securedString = ConvertTo-SecureString -String $password -Force -AsPlainText
+    Export-PfxCertificate -FilePath "$tempPath\temp.pfx" -Cert $certificatePath -Password $securedString
+    Import-PfxCertificate -FilePath "$tempPath\temp.pfx" -CertStoreLocation "Cert:\LocalMachine\Root" -Password $securedString
+    New-IISSiteBinding -Name "Default Web Site" -BindingInformation $bindingInformation -CertificateThumbPrint $thumbPrint -CertStoreLocation $storeLocation -Protocol https
+    }
+
 Function Invoke-RequestSSLCertificate
 {
     <#

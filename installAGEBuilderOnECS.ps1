@@ -22,6 +22,9 @@ Invoke-EnterpriseBuilderPrep
 Write-Output "Run EnterpriseBuilderInstallPrerequisites"
 Invoke-EnterpriseBuilderInstallPrerequisites 
 
+Write-Output "Invoke-CreateWindowsIISCertBinding"
+Invoke-CreateWindowsIISCertBinding
+
 Write-Output "Run Invoke-RequestSSLCertificate"
 Invoke-RequestSSLCertificate
 
